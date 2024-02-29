@@ -26,6 +26,8 @@
             <span id="tokenNome">Buscando informação...</span>
             -
             <span id="tokenSimbolo">Buscando informação...</span>
+            -
+            <span id="tokenRating">Buscando informação...</span>
           </h3>
           <h3>Total circulante: <span id="tokenTotalSupply">Buscando informação...</span></h3>
         </section>
@@ -203,6 +205,11 @@
         const tokenSimbolo = document.getElementById("tokenSimbolo");
         tokenSimbolo.innerHTML = tokenSimboloObj;
 
+        const tokenRatingObj = await contract.rating();
+        console.log("tokenSimbolo: ", tokenRatingObj);
+        const tokenRating = document.getElementById("tokenRating");
+        tokenRating.innerHTML = tokenRatingObj;
+
         const tokenTotalSupplyObj = await contract.totalSupply();
         const tokenTotalSupply = document.getElementById("tokenTotalSupply");
         tokenTotalSupply.innerHTML = tokenTotalSupplyObj;
@@ -237,6 +244,17 @@
         const saldo = await contract.balanceOf(form.formTo.value);
         form.formAmount.value = saldo;
       }
+
+      
+
+      async function rating() {
+        event.preventDefault();
+        const form = document.getElementById("formSaldo");
+        alert("Aguarde a consulta ser processada pelo Provedor");
+        const saldo = await contract.rating();
+        form.formAmount.value = saldo;
+      }
+
 
       async function mintar() {
         event.preventDefault();
