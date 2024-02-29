@@ -85,6 +85,32 @@
         </section>
         <hr />
         <section>
+          <h2>Burn Token</h2>
+          <div>
+            <form action="" name="formBurn" id="formBurn" method="get">
+              <label for="formTo">Endereço da destinatário:</label>
+              <br /><br />
+              <input
+                type="text"
+                placeholder="<0x...>"
+                required
+                name="formTo"
+                id="formTo"
+                size="100"
+                maxlength="45"
+                style="width: 500px"
+              />
+              <br /><br />
+              <label for="formAmountBurn">Quantidade:</label>
+              <br /><br />
+              <input type="number" placeholder="10000" required name="formAmountBurn" id="formAmountBurn" />
+              <br /><br />
+              <input id="btnBurn" type="button" value="Burn (Queimar) Token" onclick="burn()" />
+            </form>
+          </div>
+        </section>
+        <hr />
+        <section>
           <h2>Rede e Infra</h2>
           <h3>Conta selectionada: <span id="networkAccount">&nbsp;</span></h3>
           <h3>Rede selecionada: <span id="networkNetworkID">&nbsp;</span></h3>
@@ -201,6 +227,24 @@
           await atualizaTotalSupply();
           alert("Parabéns! Mais tokens gerados.");
           btn.value = "Mintar (gerar) Token";
+          form.reset();
+        }
+      }
+      async function burn() {
+        event.preventDefault();
+        const btn = document.getElementById("btnBurn");
+        btn.value = "Processando...";
+        alert("Aguarde e confirme a transação no Metamask");
+        const form = document.getElementById("formMintBurn");
+        const tx = await contract.burn(form.formTo.value, form.formAmountBurn.value);
+        console.log("tx enviada: ", tx);
+        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+        const txReceipt = await tx.wait();
+        console.log("txReceipt: ", txReceipt);
+        if (txReceipt.status === 1) {
+          await atualizaTotalSupply();
+          alert("Parabéns! Mais tokens gerados.");
+          btn.value = "Burn (Queimar) Token";
           form.reset();
         }
       }
