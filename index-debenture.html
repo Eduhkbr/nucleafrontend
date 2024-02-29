@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <title>Exercício Token - ERC20</title>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>Exercício Token - ERC20</h1>
+      </div>
+    </header>
+    <br />
+    <main>
+      <div class="container">
+        <section>
+          <h3>
+            Dados Token:
+            <span id="tokenNome">Buscando informação...</span>
+            -
+            <span id="tokenSimbolo">Buscando informação...</span>
+          </h3>
+          <h3>Total circulante: <span id="tokenTotalSupply">Buscando informação...</span></h3>
+        </section>
+        <hr />
+        <section>
+          <h2>Saldo em Tokens</h2>
+          <div>
+            <form action="" name="formSaldo" id="formSaldo" method="get">
+              <label for="formTo">Endereço cliente:</label>
+              <br /><br />
+              <input
+                size="100"
+                maxlength="45"
+                type="text"
+                placeholder="<0x...>"
+                required
+                name="formTo"
+                id="formTo"
+                style="width: 500px"
+              />
+              <br /><br />
+              <label for="formAmount">Quantidade:</label>
+              <br /><br />
+              <input type="number" disabled name="formAmount" id="formAmount" />
+              <br /><br />
+              <input type="button" value="Consultar" onclick="consultar()" />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="reset" value="Limpar" />
+            </form>
+          </div>
+        </section>
+        <hr />
+        <section>
+          <h2>Novo Token</h2>
+          <div>
+            <form action="" name="formMint" id="formMint" method="get">
+              <label for="formTo">Endereço da destinatário:</label>
+              <br /><br />
+              <input
+                type="text"
+                placeholder="<0x...>"
+                required
+                name="formTo"
+                id="formTo"
+                size="100"
+                maxlength="45"
+                style="width: 500px"
+              />
+              <br /><br />
+              <label for="formAmount">Quantidade:</label>
+              <br /><br />
+              <input type="number" placeholder="10000" required name="formAmount" id="formAmount" />
+              <br /><br />
+              <input id="btnMintar" type="button" value="Mintar (gerar) Token" onclick="mintar()" />
+            </form>
+          </div>
+        </section>
+        <hr />
+        <section>
+          <h2>Rede e Infra</h2>
+          <h3>Conta selectionada: <span id="networkAccount">&nbsp;</span></h3>
+          <h3>Rede selecionada: <span id="networkNetworkID">&nbsp;</span></h3>
+        </section>
+      </div>
+    </main>
+    <footer>
+      <hr />
+      <p class="text-center">Página para teste e estudo.</p>
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script src="token-abi.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.6.1/ethers.umd.min.js"></script>
+    <script>
+      async function init() {
+        if (window.ethereum == null) {
+          // If MetaMask is not installed, we use the default provider,
+          // which is backed by a variety of third-party services (such
+          // as INFURA). They do not have private keys installed so are
+          // only have read-only access
+          console.log("MetaMask not installed; using read-only defaults");
+          //provider = ethers.getDefaultProvider();
+          provider = new ethers.InfuraProvider("sepolia");
+          network = await provider.getNetwork();
+          contract = new ethers.Contract(contractAddress, abi, provider);
+          console.log("selected provider: ", provider);
+          console.log("network:", network);
+        } else {
+          // Connect to the MetaMask EIP-1193 object. This is a standard
+          // protocol that allows Ethers access to make all read-only
+          // requests through MetaMask.
+          provider = new ethers.BrowserProvider(window.ethereum);
+          // It also provides an opportunity to request access to write
+          // operations, which will be performed by the private key
+          // that MetaMask manages for the user.
+          alert("O Metamask irá pedir aprovação para acessar essa página.\nPor favor, aceite.");
+          signer = await provider.getSigner();
+          network = await provider.getNetwork();
+          contract = new ethers.Contract(contractAddress, abi, signer);
+          console.log("signer: ", signer);
+          console.log("contract: ", contract);
+          const networkAccount = document.getElementById("networkAccount");
+          networkAccount.innerHTML = signer.address;
+        }
+
+        ABIHelper = new ethers.Interface(abi);
+
+        console.log("selected provider: ", provider);
+        console.log("network:", network);
+        const networkNetworkID = document.getElementById("networkNetworkID");
+        networkNetworkID.innerHTML = network.chainId;
+
+        // Obtem dados do contrato
+        const tokenNomeObj = await contract.name();
+        const tokenNome = document.getElementById("tokenNome");
+        tokenNome.innerHTML = tokenNomeObj;
+
+        const tokenSimboloObj = await contract.symbol();
+        console.log("tokenSimbolo: ", tokenSimboloObj);
+        const tokenSimbolo = document.getElementById("tokenSimbolo");
+        tokenSimbolo.innerHTML = tokenSimboloObj;
+
+        const tokenTotalSupplyObj = await contract.totalSupply();
+        const tokenTotalSupply = document.getElementById("tokenTotalSupply");
+        tokenTotalSupply.innerHTML = tokenTotalSupplyObj;
+
+        //eventos
+        const filtroEvento = contract.filters.Transfer;
+        eventos = await contract.queryFilter(filtroEvento, -90000);
+        console.log("Numero de transferencias: ", eventos.length);
+        if (eventos.length > 0) {
+          eventos.forEach((evento) => {
+            parseLogTransferencia(evento);
+          });
+        }
+      }
+
+      function parseLogTransferencia(evento) {
+        const parsedLog = ABIHelper.parseLog(evento);
+        console.log("Evento de Transferencia Parseado:", parsedLog);
+      }
+    </script>
+    <script>
+      async function atualizaTotalSupply() {
+        const tokenTotalSupplyObj = await contract.totalSupply();
+        const tokenTotalSupply = document.getElementById("tokenTotalSupply");
+        tokenTotalSupply.innerHTML = tokenTotalSupplyObj;
+      }
+
+      async function consultar() {
+        event.preventDefault();
+        const form = document.getElementById("formSaldo");
+        alert("Aguarde a consulta ser processada pelo Provedor");
+        const saldo = await contract.balanceOf(form.formTo.value);
+        form.formAmount.value = saldo;
+      }
+
+      async function mintar() {
+        event.preventDefault();
+        const btn = document.getElementById("btnMintar");
+        btn.value = "Processando...";
+        alert("Aguarde e confirme a transação no Metamask");
+        const form = document.getElementById("formMint");
+        const tx = await contract.mint(form.formTo.value, form.formAmount.value);
+        console.log("tx enviada: ", tx);
+        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+        const txReceipt = await tx.wait();
+        console.log("txReceipt: ", txReceipt);
+        if (txReceipt.status === 1) {
+          await atualizaTotalSupply();
+          alert("Parabéns! Mais tokens gerados.");
+          btn.value = "Mintar (gerar) Token";
+          form.reset();
+        }
+      }
+      let signer = null;
+      let provider;
+      let network;
+      let contract;
+      let ABIHelper;
+      const contractAddress = "0x2A846FC387e88F1fAC685AeFD70EeE26394C5611";
+      init();
+    </script>
+  </body>
+</html>
