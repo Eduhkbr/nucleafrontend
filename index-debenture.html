@@ -207,7 +207,6 @@
         tokenSimbolo.innerHTML = tokenSimboloObj;
 
         const tokenRatingObj = await contract.rating();
-        console.log("tokenRating: ", tokenRatingObj);
         const tokenRating = document.getElementById("tokenRating");
         tokenRating.innerHTML = tokenRatingObj;
 
@@ -249,17 +248,6 @@
         const saldo = await contract.balanceOf(form.formTo.value);
         form.formAmount.value = saldo;
       }
-
-      
-
-      async function rating() {
-        event.preventDefault();
-        const form = document.getElementById("formSaldo");
-        alert("Aguarde a consulta ser processada pelo Provedor");
-        const saldo = await contract.rating();
-        form.formAmount.value = saldo;
-      }
-
 
       async function mintar() {
         event.preventDefault();
