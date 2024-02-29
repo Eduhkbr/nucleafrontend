@@ -111,6 +111,32 @@
         </section>
         <hr />
         <section>
+          <h2>Transferir Token</h2>
+          <div>
+            <form action="" name="formTransfer" id="formTransfer" method="get">
+              <label for="formTo">Endereço da destinatário:</label>
+              <br /><br />
+              <input
+                type="text"
+                placeholder="<0x...>"
+                required
+                name="formTo"
+                id="formTo"
+                size="100"
+                maxlength="45"
+                style="width: 500px"
+              />
+              <br /><br />
+              <label for="formAmountTransfer">Quantidade:</label>
+              <br /><br />
+              <input type="number" placeholder="10000" required name="formAmountTransfer" id="formAmountTransfer" />
+              <br /><br />
+              <input id="btnTransfer" type="button" value="Transferir Token" onclick="transfer()" />
+            </form>
+          </div>
+        </section>
+        <hr />
+        <section>
           <h2>Rede e Infra</h2>
           <h3>Conta selectionada: <span id="networkAccount">&nbsp;</span></h3>
           <h3>Rede selecionada: <span id="networkNetworkID">&nbsp;</span></h3>
@@ -244,8 +270,27 @@
         console.log("txReceipt: ", txReceipt);
         if (txReceipt.status === 1) {
           await atualizaTotalSupply();
-          alert("Parabéns! Mais tokens gerados.");
+          alert("Parabéns! Os tokens foram queimados.");
           btn.value = "Burn (Queimar) Token";
+          form.reset();
+        }
+      }
+
+      async function transfer() {
+        event.preventDefault();
+        const btn = document.getElementById("btnTransfer");
+        btn.value = "Processando...";
+        alert("Aguarde e confirme a transação no Metamask");
+        const form = document.getElementById("formTransfer");
+        const tx = await contract.transfer(form.formTo.value, form.formAmountTransfer.value);
+        console.log("tx enviada: ", tx);
+        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+        const txReceipt = await tx.wait();
+        console.log("txReceipt: ", txReceipt);
+        if (txReceipt.status === 1) {
+          await atualizaTotalSupply();
+          alert("Parabéns! Tokens transferidos");
+          btn.value = "Transferir Token";
           form.reset();
         }
       }
