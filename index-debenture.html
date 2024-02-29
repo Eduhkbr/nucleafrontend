@@ -230,12 +230,13 @@
           form.reset();
         }
       }
+
       async function burn() {
         event.preventDefault();
         const btn = document.getElementById("btnBurn");
         btn.value = "Processando...";
         alert("Aguarde e confirme a transação no Metamask");
-        const form = document.getElementById("formMintBurn");
+        const form = document.getElementById("formBurn");
         const tx = await contract.burn(form.formTo.value, form.formAmountBurn.value);
         console.log("tx enviada: ", tx);
         alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
