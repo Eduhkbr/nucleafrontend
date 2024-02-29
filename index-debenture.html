@@ -30,6 +30,7 @@
             <span id="tokenRating">Buscando informação...</span>
           </h3>
           <h3>Total circulante: <span id="tokenTotalSupply">Buscando informação...</span></h3>
+          <h3>Owner do Token: <span id="tokenOwnerToken">Buscando informação...</span></h3>
         </section>
         <hr />
         <section>
@@ -213,6 +214,10 @@
         const tokenTotalSupplyObj = await contract.totalSupply();
         const tokenTotalSupply = document.getElementById("tokenTotalSupply");
         tokenTotalSupply.innerHTML = tokenTotalSupplyObj;
+
+        const tokenOwnerTokenObj = await contract.whoIsTheOwner();
+        const tokenOwnerToken = document.getElementById("tokenOwnerToken");
+        tokenOwnerToken.innerHTML = tokenOwnerTokenObj;
 
         //eventos
         const filtroEvento = contract.filters.Transfer;
