@@ -27,12 +27,12 @@
                 </a>
               </li>
               <li>
-                <a href="#menuTransfer" class="nav-link text-white">
+                <a href="#menuTransfer" class="nav-link text-white" onclick="carregarTransferHtml()">
                   Transferir
                 </a>
               </li>
               <li>
-                <a href="#MenuBurn" class="nav-link text-white">
+                <a href="#MenuBurn" class="nav-link text-white" onclick="carregarBurnHtml()">
                   Burn
                 </a>
               </li>
@@ -59,65 +59,15 @@
           <br><br><br><br><br><br><br><br><br><br>
         </div>
       </div>
-      <div class="container">
-        <hr />
-        <section>
-          <h2>Burn Token</h2>
-          <div>
-            <form action="" name="formBurn" id="formBurn" method="get">
-              <label for="formTo">Endereço da destinatário:</label>
-              <br /><br />
-              <input
-                type="text"
-                placeholder="<0x...>"
-                required
-                name="formTo"
-                id="formTo"
-                size="100"
-                maxlength="45"
-                style="width: 500px"
-              />
-              <br /><br />
-              <label for="formAmountBurn">Quantidade:</label>
-              <br /><br />
-              <input type="number" placeholder="10000" required name="formAmountBurn" id="formAmountBurn" />
-              <br /><br />
-              <input id="btnBurn" type="button" value="Burn (Queimar) Token" onclick="burn()" />
-            </form>
-          </div>
-        </section>
-        <hr />
-        <section>
-          <h2>Transferir Token</h2>
-          <div>
-            <form action="" name="formTransfer" id="formTransfer" method="get">
-              <label for="formTo">Endereço da destinatário:</label>
-              <br /><br />
-              <input
-                type="text"
-                placeholder="<0x...>"
-                required
-                name="formTo"
-                id="formTo"
-                size="100"
-                maxlength="45"
-                style="width: 500px"
-              />
-              <br /><br />
-              <label for="formAmountTransfer">Quantidade:</label>
-              <br /><br />
-              <input type="number" placeholder="10000" required name="formAmountTransfer" id="formAmountTransfer" />
-              <br /><br />
-              <input id="btnTransfer" type="button" value="Transferir Token" onclick="transfer()" />
-            </form>
-          </div>
-        </section>
-        <hr />
-        <section>
-          <h2>Rede e Infra</h2>
-          <h3>Conta selectionada: <span id="networkAccount">&nbsp;</span></h3>
-          <h3>Rede selecionada: <span id="networkNetworkID">&nbsp;</span></h3>
-        </section>
+      <div class="d-grid gap-3" style="grid-template-columns: 1fr;">
+        <div class="bg-body-tertiary border rounded-3">
+          <hr />
+          <section>
+            <h2>Rede e Infra</h2>
+            <h3>Conta selectionada: <span id="networkAccount">&nbsp;</span></h3>
+            <h3>Rede selecionada: <span id="networkNetworkID">&nbsp;</span></h3>
+          </section>
+        </div>
       </div>
     </main>
     <footer>
@@ -215,6 +165,18 @@
       function carregarMintHtml(){
         const conteudo = document.getElementById("conteudo");
         conteudo.innerHTML = htmlMintar;
+      }
+
+      
+      function carregarBurnHtml(){
+        const conteudo = document.getElementById("conteudo");
+        conteudo.innerHTML = htmlBurn;
+      }
+
+      
+      function carregarTransferHtml(){
+        const conteudo = document.getElementById("conteudo");
+        conteudo.innerHTML = htmlTransfer;
       }
       
     </script>
@@ -332,7 +294,7 @@
               <input type="reset" value="Limpar" />
             </form>
           </div>
-          <br><br><br><br><br><br><br><br><br><br>`;
+          <br><br><br><br><br>`;
 
       const htmlMintar = `<h2>Novo Token</h2>
           <div>
@@ -358,6 +320,53 @@
             </form>
           </div>`;
 
+        const htmlBurn = `<h2>Burn Token</h2>
+        <div>
+          <form action="" name="formBurn" id="formBurn" method="get">
+            <label for="formTo">Endereço da destinatário:</label>
+            <br /><br />
+            <input
+              type="text"
+              placeholder="<0x...>"
+              required
+              name="formTo"
+              id="formTo"
+              size="100"
+              maxlength="45"
+              style="width: 500px"
+            />
+            <br /><br />
+            <label for="formAmountBurn">Quantidade:</label>
+            <br /><br />
+            <input type="number" placeholder="10000" required name="formAmountBurn" id="formAmountBurn" />
+            <br /><br />
+            <input id="btnBurn" type="button" value="Burn (Queimar) Token" onclick="burn()" />
+          </form>
+        </div>`;
+
+        const htmlTransfer = `<h2>Transferir Token</h2>
+          <div>
+            <form action="" name="formTransfer" id="formTransfer" method="get">
+              <label for="formTo">Endereço da destinatário:</label>
+              <br /><br />
+              <input
+                type="text"
+                placeholder="<0x...>"
+                required
+                name="formTo"
+                id="formTo"
+                size="100"
+                maxlength="45"
+                style="width: 500px"
+              />
+              <br /><br />
+              <label for="formAmountTransfer">Quantidade:</label>
+              <br /><br />
+              <input type="number" placeholder="10000" required name="formAmountTransfer" id="formAmountTransfer" />
+              <br /><br />
+              <input id="btnTransfer" type="button" value="Transferir Token" onclick="transfer()" />
+            </form>
+          </div>`;
       
       init();
     </script>
