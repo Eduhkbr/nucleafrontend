@@ -230,6 +230,10 @@
           networkAccount.innerHTML = signer.address;
         }
 
+        // Carrega estrutura do cabeçalho na tela
+        const cabecalho = document.getElementById("cabecalho");
+        cabecalho.innerHTML = htmlCabecalho;
+
         ABIHelper = new ethers.Interface(abi);
 
         console.log("selected provider: ", provider);
@@ -268,11 +272,6 @@
             parseLogTransferencia(evento);
           });
         }
-      }
-
-      async function carregaCabecalho() {
-        const cabecalho = document.getElementById("cabecalho");
-        cabecalho.innerHTML = htmlCabecalho;
       }
 
       function parseLogTransferencia(evento) {
