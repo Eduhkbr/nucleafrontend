@@ -62,7 +62,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.6.1/ethers.umd.min.js"></script>
     <script>
       async function init() {
-        gerenciarSubstituicao();
+        gerenciarSubstituicao(0);
         if (window.ethereum == null) {
           // If MetaMask is not installed, we use the default provider,
           // which is backed by a variety of third-party services (such
@@ -148,34 +148,31 @@
       function carregarMintHtml(){
         const conteudo = document.getElementById("conteudo");
         conteudo.innerHTML = htmlMintar;
-        menuAtual = 3;
-        gerenciarSubstituicao();
+        gerenciarSubstituicao(3);
       }
 
       
       function carregarBurnHtml(){
         const conteudo = document.getElementById("conteudo");
         conteudo.innerHTML = htmlBurn;
-        menuAtual = 2;
-        gerenciarSubstituicao();
+        gerenciarSubstituicao(2);
       }
 
       
       function carregarTransferHtml(){
         const conteudo = document.getElementById("conteudo");
         conteudo.innerHTML = htmlTransfer;
-        menuAtual = 1;
-        gerenciarSubstituicao();
+        gerenciarSubstituicao(1);
       }
 
       function carregarInicioHtml(){
         const conteudo = document.getElementById("conteudo");
         conteudo.innerHTML = "";
-        menuAtual = 0;
-        gerenciarSubstituicao();
+        gerenciarSubstituicao(0);
       }
 
-      function gerenciarSubstituicao() {
+      function gerenciarSubstituicao(menu) {
+        let menuAtual = menu;
         const htmlMenusInicial = `<li>
           <a href="#home" class="nav-link ${menuAtual === 0 ? 'text-secondary' : 'text-white'}" onclick="carregarInicioHtml()">
             Inicio
@@ -390,8 +387,6 @@
             <input id="btnTransfer" type="button" value="Transferir Token" onclick="transfer()" />
           </form>
         </div>`;
-
-      const menuAtual = 0;
       init();
     </script>
   </body>
