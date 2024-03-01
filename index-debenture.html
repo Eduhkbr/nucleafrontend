@@ -37,7 +37,7 @@
                 </a>
               </li>
               <li>
-                <a href="#MenuMint" class="nav-link text-white">
+                <a href="#MenuMint" class="nav-link text-white" onclick="carregarMintHtml()">
                   Mintar
                 </a>
               </li>
@@ -60,32 +60,6 @@
         </div>
       </div>
       <div class="container">
-        <hr />
-        <section>
-          <h2>Novo Token</h2>
-          <div>
-            <form action="" name="formMint" id="formMint" method="get">
-              <label for="formTo">Endereço da destinatário:</label>
-              <br /><br />
-              <input
-                type="text"
-                placeholder="<0x...>"
-                required
-                name="formTo"
-                id="formTo"
-                size="100"
-                maxlength="45"
-                style="width: 500px"
-              />
-              <br /><br />
-              <label for="formAmount">Quantidade:</label>
-              <br /><br />
-              <input type="number" placeholder="10000" required name="formAmount" id="formAmount" />
-              <br /><br />
-              <input id="btnMintar" type="button" value="Mintar (gerar) Token" onclick="mintar()" />
-            </form>
-          </div>
-        </section>
         <hr />
         <section>
           <h2>Burn Token</h2>
@@ -237,6 +211,11 @@
         const parsedLog = ABIHelper.parseLog(evento);
         console.log("Evento de Transferencia Parseado:", parsedLog);
       }
+
+      function carregarMintHtml(){
+        const conteudo = document.getElementById("conteudo");
+        conteudo.innerHTML = htmlMintar;
+      }
       
     </script>
     <script>
@@ -355,7 +334,31 @@
           </div>
           <br><br><br><br><br><br><br><br><br><br>`;
 
-      const html
+      const htmlMintar = `<h2>Novo Token</h2>
+          <div>
+            <form action="" name="formMint" id="formMint" method="get">
+              <label for="formTo">Endereço da destinatário:</label>
+              <br /><br />
+              <input
+                type="text"
+                placeholder="<0x...>"
+                required
+                name="formTo"
+                id="formTo"
+                size="100"
+                maxlength="45"
+                style="width: 500px"
+              />
+              <br /><br />
+              <label for="formAmount">Quantidade:</label>
+              <br /><br />
+              <input type="number" placeholder="10000" required name="formAmount" id="formAmount" />
+              <br /><br />
+              <input id="btnMintar" type="button" value="Mintar (gerar) Token" onclick="mintar()" />
+            </form>
+          </div>`;
+
+      
       init();
     </script>
   </body>
