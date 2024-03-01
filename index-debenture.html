@@ -22,31 +22,31 @@
   
             <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
               <li>
-                <a href="#" class="nav-link text-secondary">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#home"></use></svg>
+                <a href="#home" class="nav-link text-secondary">
+                  <i class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#home"></use></i>
                   Inicio
                 </a>
               </li>
               <li>
-                <a href="#" class="nav-link text-white">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#menuToken"></use></svg>
+                <a href="#menuToken" class="nav-link text-white">
+                  <i class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#menuToken"></use></i>
                   Debenture Tokenizada
                 </a>
               </li>
               <li>
-                <a href="#" class="nav-link text-white">
-                  <i class="bi bi-cloud-download" width="24" height="24"><use xlink:href="#people-circle"></use></i>
+                <a href="#menuTransfer" class="nav-link text-white">
+                  <i class="bi bi-cloud-download" width="24" height="24"><use xlink:href="#menuTransfer"></use></i>
                   Transferir
                 </a>
               </li>
               <li>
-                <a href="#" class="nav-link text-white">
+                <a href="#MenuBurn" class="nav-link text-white">
                   <i class="bi bi-cloud-minus" width="24" height="24"><use xlink:href="#MenuBurn"></use></i>
                   Burn
                 </a>
               </li>
               <li>
-                <a href="#" class="nav-link text-white">
+                <a href="#MenuMint" class="nav-link text-white">
                   <i class="bi bi-cloud-plus" width="24" height="24"><use xlink:href="#MenuMint"></use></i>
                   Mintar
                 </a>
@@ -55,33 +55,23 @@
           </div>
         </div>
       </div>
-      <div class="px-3 py-2 border-bottom mb-3">
-        <div class="container d-flex flex-wrap justify-content-center">
-          <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto" role="search">
-            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-          </form>
-  
-          <div class="text-end">
-            <button type="button" class="btn btn-light text-dark me-2">Login</button>
-            <button type="button" class="btn btn-primary">Sign-up</button>
-          </div>
-        </div>
-      </div>
     </header>
     <br />
     <main>
+      <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
+        <div class="bg-body-tertiary border rounded-3" id="cabecalho" name="cabecalho">
+          <h3>
+            Carregando dados...
+          </h3>
+          <br><br><br><br><br><br><br><br><br><br>
+        </div>
+        <div class="bg-body-tertiary border rounded-3" id="conteudo" name="conteudo">
+          <br><br><br><br><br><br><br><br><br><br>
+        </div>
+      </div>
       <div class="container">
         <section>
-          <h3>
-            Dados Token:
-            <span id="tokenNome">Buscando informação...</span>
-            -
-            <span id="tokenSimbolo">Buscando informação...</span>
-            -
-            <span id="tokenRating">Buscando informação...</span>
-          </h3>
-          <h3>Total circulante: <span id="tokenTotalSupply">Buscando informação...</span></h3>
-          <h3>Owner do Token: <span id="tokenOwnerToken">Buscando informação...</span></h3>
+          
         </section>
         <hr />
         <section>
@@ -280,10 +270,16 @@
         }
       }
 
+      async function carregaCabecalho() {
+        const cabecalho = document.getElementById("cabecalho");
+        cabecalho.innerHTML = htmlCabecalho;
+      }
+
       function parseLogTransferencia(evento) {
         const parsedLog = ABIHelper.parseLog(evento);
         console.log("Evento de Transferencia Parseado:", parsedLog);
       }
+      
     </script>
     <script>
       async function atualizaTotalSupply() {
@@ -362,6 +358,18 @@
       let contract;
       let ABIHelper;
       const contractAddress = "0x2A846FC387e88F1fAC685AeFD70EeE26394C5611";
+
+      const htmlCabecalho = `<h3>
+            Dados Token:
+            <span id="tokenNome">Buscando informação...</span>
+            -
+            <span id="tokenSimbolo">Buscando informação...</span>
+            -
+            <span id="tokenRating">Buscando informação...</span>
+          </h3>
+          <h3>Total circulante: <span id="tokenTotalSupply">Buscando informação...</span></h3>
+          <h3>Owner do Token: <span id="tokenOwnerToken">Buscando informação...</span></h3>
+          <br><br><br><br><br><br><br><br><br><br>`;
       init();
     </script>
   </body>
