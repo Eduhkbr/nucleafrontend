@@ -17,37 +17,27 @@
         <div class="container">
           <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
-              <i class="bi bi-coin" width="40" height="32" role="img" aria-label="coin"><use xlink:href="#coin"></use></i>
+              Exercício Token - ERC20
             </a>
   
             <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
               <li>
                 <a href="#home" class="nav-link text-secondary">
-                  <i class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#home"></use></i>
                   Inicio
                 </a>
               </li>
               <li>
-                <a href="#menuToken" class="nav-link text-white">
-                  <i class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#menuToken"></use></i>
-                  Debenture Tokenizada
-                </a>
-              </li>
-              <li>
                 <a href="#menuTransfer" class="nav-link text-white">
-                  <i class="bi bi-cloud-download" width="24" height="24"><use xlink:href="#menuTransfer"></use></i>
                   Transferir
                 </a>
               </li>
               <li>
                 <a href="#MenuBurn" class="nav-link text-white">
-                  <i class="bi bi-cloud-minus" width="24" height="24"><use xlink:href="#MenuBurn"></use></i>
                   Burn
                 </a>
               </li>
               <li>
                 <a href="#MenuMint" class="nav-link text-white">
-                  <i class="bi bi-cloud-plus" width="24" height="24"><use xlink:href="#MenuMint"></use></i>
                   Mintar
                 </a>
               </li>
@@ -70,37 +60,6 @@
         </div>
       </div>
       <div class="container">
-        <section>
-          
-        </section>
-        <hr />
-        <section>
-          <h2>Saldo em Tokens</h2>
-          <div>
-            <form action="" name="formSaldo" id="formSaldo" method="get">
-              <label for="formTo">Endereço cliente:</label>
-              <br /><br />
-              <input
-                size="100"
-                maxlength="45"
-                type="text"
-                placeholder="<0x...>"
-                required
-                name="formTo"
-                id="formTo"
-                style="width: 500px"
-              />
-              <br /><br />
-              <label for="formAmount">Quantidade:</label>
-              <br /><br />
-              <input type="number" disabled name="formAmount" id="formAmount" />
-              <br /><br />
-              <input type="button" value="Consultar" onclick="consultar()" />
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <input type="reset" value="Limpar" />
-            </form>
-          </div>
-        </section>
         <hr />
         <section>
           <h2>Novo Token</h2>
@@ -368,7 +327,35 @@
           </h3>
           <h3>Total circulante: <span id="tokenTotalSupply">Buscando informação...</span></h3>
           <h3>Owner do Token: <span id="tokenOwnerToken">Buscando informação...</span></h3>
+          <br><br>
+          <h3>Saldo em Tokens</h3>
+          <div>
+            <form action="" name="formSaldo" id="formSaldo" method="get">
+              <label for="formTo">Endereço cliente:</label>
+              <br /><br />
+              <input
+                size="100"
+                maxlength="45"
+                type="text"
+                placeholder="<0x...>"
+                required
+                name="formTo"
+                id="formTo"
+                style="width: 500px"
+              />
+              <br /><br />
+              <label for="formAmount">Quantidade:</label>
+              <br /><br />
+              <input type="number" disabled name="formAmount" id="formAmount" />
+              <br /><br />
+              <input type="button" value="Consultar" onclick="consultar()" />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="reset" value="Limpar" />
+            </form>
+          </div>
           <br><br><br><br><br><br><br><br><br><br>`;
+
+      const html
       init();
     </script>
   </body>
