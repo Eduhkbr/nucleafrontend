@@ -250,7 +250,7 @@
         btn.value = "Processando...";
         alert("Aguarde e confirme a transação no Metamask");
         const form = document.getElementById("formRating");
-        const tx = await contract.rating(form.formTo.value, form.formAmountRating.value);
+        const tx = await contract.mudaRating(form.formAmountRating.value);
         console.log("tx enviada: ", tx);
         alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
         const txReceipt = await tx.wait();

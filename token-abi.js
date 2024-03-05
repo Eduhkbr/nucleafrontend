@@ -148,6 +148,25 @@ const abi = [
 	{
 		"inputs": [
 			{
+				"internalType": "string",
+				"name": "novoRating",
+				"type": "string"
+			}
+		],
+		"name": "mudaRating",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "_newOwner",
 				"type": "address"
