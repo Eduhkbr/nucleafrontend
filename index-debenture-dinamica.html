@@ -247,16 +247,20 @@
         btn.value = "Processando...";
         alert("Aguarde e confirme a transação no Metamask");
         const form = document.getElementById("formMint");
-        const tx = await contract.mint(form.formTo.value, form.formAmount.value);
-        console.log("tx enviada: ", tx);
-        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
-        const txReceipt = await tx.wait();
-        console.log("txReceipt: ", txReceipt);
-        if (txReceipt.status === 1) {
-          await atualizaTotalSupply();
-          alert("Parabéns! Mais tokens gerados.");
-          btn.value = "Mintar (gerar) Token";
-          form.reset();
+        try{
+          const tx = await contract.mint(form.formTo.value, form.formAmount.value);
+          console.log("tx enviada: ", tx);
+          alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+          const txReceipt = await tx.wait();
+          console.log("txReceipt: ", txReceipt);
+          if (txReceipt.status === 1) {
+            await atualizaTotalSupply();
+            alert("Parabéns! Mais tokens gerados.");
+            btn.value = "Mintar (gerar) Token";
+            form.reset();
+          }
+        }catch(error){
+          alert("Você não pode Mintar nesse contrato")
         }
       }
 
@@ -266,16 +270,20 @@
         btn.value = "Processando...";
         alert("Aguarde e confirme a transação no Metamask");
         const form = document.getElementById("formRating");
-        const tx = await contract.mudaRating(form.formAmountRating.value);
-        console.log("tx enviada: ", tx);
-        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
-        const txReceipt = await tx.wait();
-        console.log("txReceipt: ", txReceipt);
-        if (txReceipt.status === 1) {
-          await atualizaRating();
-          alert("Parabéns! Rating alterado.");
-          btn.value = "Rating Token";
-          form.reset();
+        try{
+          const tx = await contract.mudaRating(form.formAmountRating.value);
+          console.log("tx enviada: ", tx);
+          alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+          const txReceipt = await tx.wait();
+          console.log("txReceipt: ", txReceipt);
+          if (txReceipt.status === 1) {
+            await atualizaRating();
+            alert("Parabéns! Rating alterado.");
+            btn.value = "Rating Token";
+            form.reset();
+          }
+        }catch(error){
+          alert("Você não pode mudar o Rating do contrato")
         }
       }
 
@@ -293,16 +301,20 @@
         btn.value = "Processando...";
         alert("Aguarde e confirme a transação no Metamask");
         const form = document.getElementById("formBurn");
-        const tx = await contract.burn(form.formTo.value, form.formAmountBurn.value);
-        console.log("tx enviada: ", tx);
-        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
-        const txReceipt = await tx.wait();
-        console.log("txReceipt: ", txReceipt);
-        if (txReceipt.status === 1) {
-          await atualizaTotalSupply();
-          alert("Parabéns! Os tokens foram queimados.");
-          btn.value = "Burn (Queimar) Token";
-          form.reset();
+        try{
+          const tx = await contract.burn(form.formTo.value, form.formAmountBurn.value);
+          console.log("tx enviada: ", tx);
+          alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+          const txReceipt = await tx.wait();
+          console.log("txReceipt: ", txReceipt);
+          if (txReceipt.status === 1) {
+            await atualizaTotalSupply();
+            alert("Parabéns! Os tokens foram queimados.");
+            btn.value = "Burn (Queimar) Token";
+            form.reset();
+          }
+        }catch(error){
+          alert("Você não pode queimar tokens desse contrato")
         }
       }
 
