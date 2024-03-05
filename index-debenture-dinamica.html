@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <title>Exercício Token - ERC20</title>
+  </head>
+  <body>
+    <header>
+      <div class="px-3 py-2 text-bg-dark border-bottom">
+        <div class="container">
+          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+              Exercício Token - ERC20
+            </a>
+  
+            <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small" id="menus" name="menus">
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+    <br />
+    <main>
+      <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
+        <div class="bg-body-tertiary border rounded-3" id="cabecalho" name="cabecalho">
+          <h3>
+            Carregando dados...
+          </h3>
+          <br><br><br><br><br><br><br><br><br><br>
+        </div>
+        <div class="bg-body-tertiary border rounded-3" id="conteudo" name="conteudo">
+        </div>
+      </div>
+      <div class="d-grid gap-3" style="grid-template-columns: 1fr;">
+        <div class="bg-body-tertiary border rounded-3">
+          <hr />
+          <section>
+            <h2>Rede e Infra</h2>
+            <h3>Conta selecionada: <span id="networkAccount">&nbsp;</span></h3>
+            <h3>Rede selecionada: <span id="networkNetworkID">&nbsp;</span></h3>
+          </section>
+        </div>
+      </div>
+    </main>
+    <footer class="py-3 my-4">
+      <p class="text-center text-body-secondary">© 2024 Gestora de Debenture Tokenizada Nuclea, Inc</p>
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script src="token-abi.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.6.1/ethers.umd.min.js"></script>
+    <script>
+      async function selectContract(){
+        // Carrega estrutura do cabeçalho na tela
+        const cabecalho = document.getElementById("cabecalho");
+        cabecalho.innerHTML = htmlSelecionarContrato;
+        gerenciarSubstituicao(0);
+      }
+
+      async function init() {
+        if (window.ethereum == null) {
+          // If MetaMask is not installed, we use the default provider,
+          // which is backed by a variety of third-party services (such
+          // as INFURA). They do not have private keys installed so are
+          // only have read-only access
+          console.log("MetaMask not installed; using read-only defaults");
+          //provider = ethers.getDefaultProvider();
+          provider = new ethers.InfuraProvider("sepolia");
+          network = await provider.getNetwork();
+          contract = new ethers.Contract(contractAddress, abi, provider);
+          console.log("selected provider: ", provider);
+          console.log("network:", network);
+        } else {
+          // Connect to the MetaMask EIP-1193 object. This is a standard
+          // protocol that allows Ethers access to make all read-only
+          // requests through MetaMask.
+          provider = new ethers.BrowserProvider(window.ethereum);
+          // It also provides an opportunity to request access to write
+          // operations, which will be performed by the private key
+          // that MetaMask manages for the user.
+          alert("O Metamask irá pedir aprovação para acessar essa página.\nPor favor, aceite.");
+          signer = await provider.getSigner();
+          network = await provider.getNetwork();
+          contract = new ethers.Contract(contractAddress, abi, signer);
+          console.log("signer: ", signer);
+          console.log("contract: ", contract);
+          const networkAccount = document.getElementById("networkAccount");
+          networkAccount.innerHTML = signer.address;
+        }
+
+        // Carrega estrutura do cabeçalho na tela
+        const cabecalho = document.getElementById("cabecalho");
+        cabecalho.innerHTML = htmlCabecalho;
+
+        ABIHelper = new ethers.Interface(abi);
+
+        console.log("selected provider: ", provider);
+        console.log("network:", network);
+        const networkNetworkID = document.getElementById("networkNetworkID");
+        networkNetworkID.innerHTML = network.chainId;
+
+        // Obtem dados do contrato
+        const tokenNomeObj = await contract.name();
+        const tokenNome = document.getElementById("tokenNome");
+        tokenNome.innerHTML = tokenNomeObj;
+
+        const tokenSimboloObj = await contract.symbol();
+        console.log("tokenSimbolo: ", tokenSimboloObj);
+        const tokenSimbolo = document.getElementById("tokenSimbolo");
+        tokenSimbolo.innerHTML = tokenSimboloObj;
+
+        await atualizaRating();
+
+        const tokenTotalSupplyObj = await contract.totalSupply();
+        const tokenTotalSupply = document.getElementById("tokenTotalSupply");
+        tokenTotalSupply.innerHTML = tokenTotalSupplyObj;
+
+        const tokenOwnerTokenObj = await contract.whoIsTheOwner();
+        const tokenOwnerToken = document.getElementById("tokenOwnerToken");
+        tokenOwnerToken.innerHTML = tokenOwnerTokenObj;
+
+        const tokenContractToken = document.getElementById("tokenContractToken");
+        tokenContractToken.innerHTML = contractAddress;
+        
+        //eventos
+        const filtroEvento = contract.filters.Transfer;
+        eventos = await contract.queryFilter(filtroEvento, -90000);
+        console.log("Numero de transferencias: ", eventos.length);
+        if (eventos.length > 0) {
+          eventos.forEach((evento) => {
+            parseLogTransferencia(evento);
+          });
+        }
+      }
+
+
+      async function atualizaRating(){
+        const tokenRatingObj = await contract.rating();
+        const tokenRating = document.getElementById("tokenRating");
+        tokenRating.innerHTML = "<br>Rating: " + tokenRatingObj;
+      }
+
+      function parseLogTransferencia(evento) {
+        const parsedLog = ABIHelper.parseLog(evento);
+        console.log("Evento de Transferencia Parseado:", parsedLog);
+      }
+      
+      function carregarRatingHtml(){
+        const conteudo = document.getElementById("conteudo");
+        conteudo.innerHTML = htmlRating;
+        gerenciarSubstituicao(4);
+      }
+
+      function carregarMintHtml(){
+        const conteudo = document.getElementById("conteudo");
+        conteudo.innerHTML = htmlMintar;
+        gerenciarSubstituicao(3);
+      }
+
+      
+      function carregarBurnHtml(){
+        const conteudo = document.getElementById("conteudo");
+        conteudo.innerHTML = htmlBurn;
+        gerenciarSubstituicao(2);
+      }
+
+      
+      function carregarTransferHtml(){
+        const conteudo = document.getElementById("conteudo");
+        conteudo.innerHTML = htmlTransfer;
+        gerenciarSubstituicao(1);
+      }
+
+      function carregarInicioHtml(){
+        const conteudo = document.getElementById("conteudo");
+        conteudo.innerHTML = "";
+        gerenciarSubstituicao(0);
+      }
+
+      function gerenciarSubstituicao(menu) {
+        let menuAtual = menu;
+        const htmlMenusInicial = `<li>
+          <a href="#home" class="nav-link ${menuAtual === 0 ? 'text-secondary' : 'text-white'}" onclick="carregarInicioHtml()">
+            Inicio
+          </a>
+        </li>
+        <li>
+          <a href="#menuTransfer" class="nav-link ${menuAtual === 1 ? 'text-secondary' : 'text-white'}" onclick="carregarTransferHtml()">
+            Transferir
+          </a>
+        </li>
+        <li>
+          <a href="#MenuBurn" class="nav-link ${menuAtual === 2 ? 'text-secondary' : 'text-white'}" onclick="carregarBurnHtml()">
+            Burn
+          </a>
+        </li>
+        <li>
+          <a href="#MenuMint" class="nav-link ${menuAtual === 3 ? 'text-secondary' : 'text-white'}" onclick="carregarMintHtml()">
+            Mintar
+          </a>
+        </li>
+        <li>
+          <a href="#MenuRating" class="nav-link ${menuAtual === 4 ? 'text-secondary' : 'text-white'}" onclick="carregarRatingHtml()">
+            Alterar Rating
+          </a>
+        </li>`;
+
+        const conteudo = document.getElementById("menus");
+        conteudo.innerHTML = htmlMenusInicial;
+    }
+      
+    </script>
+    <script>
+      async function atualizaTotalSupply() {
+        const tokenTotalSupplyObj = await contract.totalSupply();
+        const tokenTotalSupply = document.getElementById("tokenTotalSupply");
+        tokenTotalSupply.innerHTML = tokenTotalSupplyObj;
+      }
+
+      async function consultar() {
+        event.preventDefault();
+        const form = document.getElementById("formSaldo");
+        alert("Aguarde a consulta ser processada pelo Provedor");
+        const saldo = await contract.balanceOf(form.formTo.value);
+        form.formAmount.value = saldo;
+      }
+
+      async function mintar() {
+        event.preventDefault();
+        const btn = document.getElementById("btnMintar");
+        btn.value = "Processando...";
+        alert("Aguarde e confirme a transação no Metamask");
+        const form = document.getElementById("formMint");
+        const tx = await contract.mint(form.formTo.value, form.formAmount.value);
+        console.log("tx enviada: ", tx);
+        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+        const txReceipt = await tx.wait();
+        console.log("txReceipt: ", txReceipt);
+        if (txReceipt.status === 1) {
+          await atualizaTotalSupply();
+          alert("Parabéns! Mais tokens gerados.");
+          btn.value = "Mintar (gerar) Token";
+          form.reset();
+        }
+      }
+
+      async function mudarRating() {
+        event.preventDefault();
+        const btn = document.getElementById("btnRating");
+        btn.value = "Processando...";
+        alert("Aguarde e confirme a transação no Metamask");
+        const form = document.getElementById("formRating");
+        const tx = await contract.mudaRating(form.formAmountRating.value);
+        console.log("tx enviada: ", tx);
+        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+        const txReceipt = await tx.wait();
+        console.log("txReceipt: ", txReceipt);
+        if (txReceipt.status === 1) {
+          await atualizaRating();
+          alert("Parabéns! Rating alterado.");
+          btn.value = "Rating Token";
+          form.reset();
+        }
+      }
+
+      async function mudarContrato() {
+        event.preventDefault();
+        alert("Aguarde e confirme a transação no Metamask");
+        const form = document.getElementById("formContrato");
+        contractAddress = form.formHashContrato.value;
+        init();
+      }
+
+      async function burn() {
+        event.preventDefault();
+        const btn = document.getElementById("btnBurn");
+        btn.value = "Processando...";
+        alert("Aguarde e confirme a transação no Metamask");
+        const form = document.getElementById("formBurn");
+        const tx = await contract.burn(form.formTo.value, form.formAmountBurn.value);
+        console.log("tx enviada: ", tx);
+        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+        const txReceipt = await tx.wait();
+        console.log("txReceipt: ", txReceipt);
+        if (txReceipt.status === 1) {
+          await atualizaTotalSupply();
+          alert("Parabéns! Os tokens foram queimados.");
+          btn.value = "Burn (Queimar) Token";
+          form.reset();
+        }
+      }
+
+      async function transfer() {
+        event.preventDefault();
+        const btn = document.getElementById("btnTransfer");
+        btn.value = "Processando...";
+        alert("Aguarde e confirme a transação no Metamask");
+        const form = document.getElementById("formTransfer");
+        const tx = await contract.transfer(form.formTo.value, form.formAmountTransfer.value);
+        console.log("tx enviada: ", tx);
+        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+        const txReceipt = await tx.wait();
+        console.log("txReceipt: ", txReceipt);
+        if (txReceipt.status === 1) {
+          alert("Parabéns! Tokens transferidos");
+          btn.value = "Transferir Token";
+          form.reset();
+        }
+      }
+      let signer = null;
+      let provider;
+      let network;
+      let contract;
+      let ABIHelper;
+      const contractAddress = "0x2A846FC387e88F1fAC685AeFD70EeE26394C5611";
+
+      
+      const htmlCabecalho = `<h3>
+            Dados Token:
+            <span id="tokenNome">Buscando informação...</span>
+            -
+            <span id="tokenSimbolo">Buscando informação...</span>
+            <span id="tokenRating">Buscando informação...</span>
+          </h3>
+          <h3>Total circulante: <span id="tokenTotalSupply">Buscando informação...</span></h3>
+          <h3>Owner do Token: <span id="tokenOwnerToken">Buscando informação...</span></h3>
+          <h3>Contrato do Token: <span id="tokenContractToken">Buscando informação...</span></h3>
+          <br><br>
+          <h3>Saldo em Tokens</h3>
+          <div>
+            <form action="" name="formSaldo" id="formSaldo" method="get">
+              <label for="formTo">Endereço cliente:</label>
+              <br /><br />
+              <input
+                size="100"
+                maxlength="45"
+                type="text"
+                placeholder="<0x...>"
+                required
+                name="formTo"
+                id="formTo"
+                style="width: 500px"
+              />
+              <br /><br />
+              <label for="formAmount">Quantidade:</label>
+              <br /><br />
+              <input type="number" disabled name="formAmount" id="formAmount" />
+              <br /><br />
+              <input type="button" value="Consultar" onclick="consultar()" />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="reset" value="Limpar" />
+            </form>
+          </div>
+          <br><br><br><br><br>`;
+
+      const htmlMintar = `<h2>Novo Token</h2>
+          <div>
+            <form action="" name="formMint" id="formMint" method="get">
+              <label for="formTo">Endereço do destinatário:</label>
+              <br /><br />
+              <input
+                type="text"
+                placeholder="<0x...>"
+                required
+                name="formTo"
+                id="formTo"
+                size="100"
+                maxlength="45"
+                style="width: 500px"
+              />
+              <br /><br />
+              <label for="formAmount">Quantidade:</label>
+              <br /><br />
+              <input type="number" placeholder="10000" required name="formAmount" id="formAmount" />
+              <br /><br />
+              <input id="btnMintar" type="button" value="Mintar (gerar) Token" onclick="mintar()" />
+            </form>
+          </div>`;
+
+      const htmlBurn = `<h2>Burn Token</h2>
+      <div>
+        <form action="" name="formBurn" id="formBurn" method="get">
+          <label for="formTo">Endereço do destinatário:</label>
+          <br /><br />
+          <input
+            type="text"
+            placeholder="<0x...>"
+            required
+            name="formTo"
+            id="formTo"
+            size="100"
+            maxlength="45"
+            style="width: 500px"
+          />
+          <br /><br />
+          <label for="formAmountBurn">Quantidade:</label>
+          <br /><br />
+          <input type="number" placeholder="10000" required name="formAmountBurn" id="formAmountBurn" />
+          <br /><br />
+          <input id="btnBurn" type="button" value="Burn (Queimar) Token" onclick="burn()" />
+        </form>
+      </div>`;
+
+      const htmlTransfer = `<h2>Transferir Token</h2>
+        <div>
+          <form action="" name="formTransfer" id="formTransfer" method="get">
+            <label for="formTo">Endereço do destinatário:</label>
+            <br /><br />
+            <input
+              type="text"
+              placeholder="<0x...>"
+              required
+              name="formTo"
+              id="formTo"
+              size="100"
+              maxlength="45"
+              style="width: 500px"
+            />
+            <br /><br />
+            <label for="formAmountTransfer">Quantidade:</label>
+            <br /><br />
+            <input type="number" placeholder="10000" required name="formAmountTransfer" id="formAmountTransfer" />
+            <br /><br />
+            <input id="btnTransfer" type="button" value="Transferir Token" onclick="transfer()" />
+          </form>
+        </div>`;
+        
+      const htmlRating = `<h2>Novo Rating</h2>
+          <div>
+            <form action="" name="formRating" id="formRating" method="get">
+              <label>Rating:</label>
+              <br /><br />
+              <input type="text" placeholder="AAA" required name="formAmountRating" id="formAmountRating" />
+              <br /><br />
+              <input id="btnRating" type="button" value="Rating Token" onclick="mudarRating()" />
+            </form>
+          </div>`;
+
+       
+      const htmlSelecionarContrato = `<h2>Escolha o Contrato pelo HASH</h2>
+      <div>
+        <form action="" name="formContrato" id="formContrato" method="get">
+          <label>Contrato:</label>
+          <br /><br />
+          <input type="text" placeholder="0x2A846FC387e88F1fAC685AeFD70EeE26394C5611" required name="formHashContrato" id="formHashContrato" />
+          <br /><br />
+          <input id="btnContrato" type="button" value="Selecionar Contrato" onclick="mudarContrato()" />
+        </form>
+      </div>`;
+
+      selectContract();
+    </script>
+  </body>
+</html>
