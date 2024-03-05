@@ -294,7 +294,6 @@
         const txReceipt = await tx.wait();
         console.log("txReceipt: ", txReceipt);
         if (txReceipt.status === 1) {
-          await atualizaTotalSupply();
           alert("Parabéns! Tokens transferidos");
           btn.value = "Transferir Token";
           form.reset();
@@ -421,7 +420,7 @@
       const htmlRating = `<h2>Novo Rating</h2>
           <div>
             <form action="" name="formRating" id="formRating" method="get">
-              <label for="formAmount">Rating:</label>
+              <label for="formAmountRating">Rating:</label>
               <br /><br />
               <input type="text" placeholder="AAA" required name="formAmountRating" id="formAmountRating" />
               <br /><br />
