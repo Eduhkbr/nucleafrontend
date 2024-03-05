@@ -249,7 +249,7 @@
         const btn = document.getElementById("btnRating");
         btn.value = "Processando...";
         alert("Aguarde e confirme a transação no Metamask");
-        const form = document.getElementById("formRating");
+        const form = document.getElementById("formAmountRating");
         const tx = await contract.mudaRating(form.formAmountRating.value);
         console.log("tx enviada: ", tx);
         alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
@@ -420,7 +420,7 @@
       const htmlRating = `<h2>Novo Rating</h2>
           <div>
             <form action="" name="formRating" id="formRating" method="get">
-              <label for="formAmountRating">Rating:</label>
+              <label>Rating:</label>
               <br /><br />
               <input type="text" placeholder="AAA" required name="formAmountRating" id="formAmountRating" />
               <br /><br />
