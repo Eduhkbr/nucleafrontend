@@ -110,10 +110,15 @@
         networkNetworkID.innerHTML = network.chainId;
 
         // Obtem dados do contrato
-        const tokenNomeObj = await contract.name();
-        const tokenNome = document.getElementById("tokenNome");
-        tokenNome.innerHTML = tokenNomeObj;
-
+        try{
+          const tokenNomeObj = await contract.name();
+          const tokenNome = document.getElementById("tokenNome");
+          tokenNome.innerHTML = tokenNomeObj;
+        }catch(error){
+          selectContract();
+          return;
+        }
+        
         const tokenSimboloObj = await contract.symbol();
         console.log("tokenSimbolo: ", tokenSimboloObj);
         const tokenSimbolo = document.getElementById("tokenSimbolo");
@@ -278,14 +283,7 @@
         alert("Aguarde e confirme a transação no Metamask");
         const form = document.getElementById("formContrato");
         contractAddress = form.formHashContrato.value;
-
-        try{
-          init();
-        }catch(e){
-          alert("O hash informado não pertence a um contrato válido");
-          selectContract();
-          return;
-        }
+        init();
       }
 
       async function burn() {
