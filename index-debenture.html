@@ -114,9 +114,7 @@
         const tokenSimbolo = document.getElementById("tokenSimbolo");
         tokenSimbolo.innerHTML = tokenSimboloObj;
 
-        const tokenRatingObj = await contract.rating();
-        const tokenRating = document.getElementById("tokenRating");
-        tokenRating.innerHTML = tokenRatingObj;
+        await atualizaRating();
 
         const tokenTotalSupplyObj = await contract.totalSupply();
         const tokenTotalSupply = document.getElementById("tokenTotalSupply");
@@ -138,6 +136,13 @@
             parseLogTransferencia(evento);
           });
         }
+      }
+
+
+      async function atualizaRating(){
+        const tokenRatingObj = await contract.rating();
+        const tokenRating = document.getElementById("tokenRating");
+        tokenRating.innerHTML = "<br>Rating: " + tokenRatingObj;
       }
 
       function parseLogTransferencia(evento) {
@@ -256,7 +261,7 @@
         const txReceipt = await tx.wait();
         console.log("txReceipt: ", txReceipt);
         if (txReceipt.status === 1) {
-          carregarRatingHtml();
+          await atualizaRating();
           alert("Parabéns! Rating alterado.");
           btn.value = "Rating Token";
           form.reset();
