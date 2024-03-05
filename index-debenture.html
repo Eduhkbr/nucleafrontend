@@ -244,12 +244,12 @@
         }
       }
 
-      async function rating() {
+      async function mudarRating() {
         event.preventDefault();
         const btn = document.getElementById("btnRating");
         btn.value = "Processando...";
         alert("Aguarde e confirme a transação no Metamask");
-        const form = document.getElementById("formAmountRating");
+        const form = document.getElementById("formRating");
         const tx = await contract.mudaRating(form.formAmountRating.value);
         console.log("tx enviada: ", tx);
         alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
@@ -424,7 +424,7 @@
               <br /><br />
               <input type="text" placeholder="AAA" required name="formAmountRating" id="formAmountRating" />
               <br /><br />
-              <input id="btnRating" type="button" value="Rating Token" onclick="rating()" />
+              <input id="btnRating" type="button" value="Rating Token" onclick="mudarRating()" />
             </form>
           </div>`;
 
