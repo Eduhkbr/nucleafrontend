@@ -324,15 +324,19 @@
         btn.value = "Processando...";
         alert("Aguarde e confirme a transação no Metamask");
         const form = document.getElementById("formTransfer");
-        const tx = await contract.transfer(form.formTo.value, form.formAmountTransfer.value);
-        console.log("tx enviada: ", tx);
-        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
-        const txReceipt = await tx.wait();
-        console.log("txReceipt: ", txReceipt);
-        if (txReceipt.status === 1) {
-          alert("Parabéns! Tokens transferidos");
-          btn.value = "Transferir Token";
-          form.reset();
+        try{
+          const tx = await contract.transfer(form.formTo.value, form.formAmountTransfer.value);
+          console.log("tx enviada: ", tx);
+          alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+          const txReceipt = await tx.wait();
+          console.log("txReceipt: ", txReceipt);
+          if (txReceipt.status === 1) {
+            alert("Parabéns! Tokens transferidos");
+            btn.value = "Transferir Token";
+            form.reset();
+          }
+        }catch(error){
+          alert("Erro na transferência: " + error);
         }
       }
       let signer = null;
