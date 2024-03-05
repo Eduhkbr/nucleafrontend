@@ -144,6 +144,12 @@
         const parsedLog = ABIHelper.parseLog(evento);
         console.log("Evento de Transferencia Parseado:", parsedLog);
       }
+      
+      function carregarRatingHtml(){
+        const conteudo = document.getElementById("conteudo");
+        conteudo.innerHTML = htmlRating;
+        gerenciarSubstituicao(4);
+      }
 
       function carregarMintHtml(){
         const conteudo = document.getElementById("conteudo");
@@ -192,6 +198,11 @@
           <a href="#MenuMint" class="nav-link ${menuAtual === 3 ? 'text-secondary' : 'text-white'}" onclick="carregarMintHtml()">
             Mintar
           </a>
+        </li>
+        <li>
+          <a href="#MenuRating" class="nav-link ${menuAtual === 4 ? 'text-secondary' : 'text-white'}" onclick="carregarRatingHtml()">
+            Alterar Rating
+          </a>
         </li>`;
 
         const conteudo = document.getElementById("menus");
@@ -229,6 +240,25 @@
           await atualizaTotalSupply();
           alert("Parabéns! Mais tokens gerados.");
           btn.value = "Mintar (gerar) Token";
+          form.reset();
+        }
+      }
+
+      async function rating() {
+        event.preventDefault();
+        const btn = document.getElementById("btnRating");
+        btn.value = "Processando...";
+        alert("Aguarde e confirme a transação no Metamask");
+        const form = document.getElementById("formRating");
+        const tx = await contract.rating(form.formTo.value, form.formAmountRating.value);
+        console.log("tx enviada: ", tx);
+        alert("Transação enviada a Blockchain. Aguarde.\nID: " + tx.hash);
+        const txReceipt = await tx.wait();
+        console.log("txReceipt: ", txReceipt);
+        if (txReceipt.status === 1) {
+          carregarRatingHtml();
+          alert("Parabéns! Rating alterado.");
+          btn.value = "Rating Token";
           form.reset();
         }
       }
@@ -387,6 +417,18 @@
             <input id="btnTransfer" type="button" value="Transferir Token" onclick="transfer()" />
           </form>
         </div>`;
+        
+      const htmlRating = `<h2>Novo Rating</h2>
+          <div>
+            <form action="" name="formRating" id="formRating" method="get">
+              <label for="formAmount">Rating:</label>
+              <br /><br />
+              <input type="text" placeholder="AAA" required name="formAmountRating" id="formAmountRating" />
+              <br /><br />
+              <input id="btnRating" type="button" value="Rating Token" onclick="rating()" />
+            </form>
+          </div>`;
+
       init();
     </script>
   </body>
