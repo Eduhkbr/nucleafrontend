@@ -62,7 +62,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.6.1/ethers.umd.min.js"></script>
     <script>
       async function selectContract(){
-        // Carrega estrutura do cabeçalho na tela
         const cabecalho = document.getElementById("cabecalho");
         cabecalho.innerHTML = htmlSelecionarContrato;
         gerenciarSubstituicao(0);
@@ -279,7 +278,14 @@
         alert("Aguarde e confirme a transação no Metamask");
         const form = document.getElementById("formContrato");
         contractAddress = form.formHashContrato.value;
-        init();
+
+        try{
+          init();
+        }catch(e){
+          alert("O hash informado não pertence a um contrato válido");
+          selectContract();
+          return;
+        }
       }
 
       async function burn() {
