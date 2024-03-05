@@ -148,6 +148,11 @@ const abi = [
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
 				"internalType": "string",
 				"name": "novoRating",
 				"type": "string"
